@@ -1,4 +1,4 @@
-module.exports = {
+const httpStatus = {
   HTTP_SUCCESS_CODE: 200,
   HTTP_BAD_REQUEST_CODE: 400,
   HTTP_UNAUTHORIZED_CODE: 401,
@@ -6,3 +6,5 @@ module.exports = {
   HTTP_NOT_FOUND: 404,
   HTTP_INTERNAL_ERROR_CODE: 500,
 }
+
+export default httpStatus;

@@ -1,110 +1,153 @@
-// import User from "../models/users.models.js";
-// import bcrypt from "bcryptjs";
-// import jwt from "jsonwebtoken";
-// import { validationResult } from "express-validator";
 
-// // User Registration Controller
-// export const registerUser = async (req, res) => {
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     return res.status(400).json({ errors: errors.array() });
-//   }
+import {User} from "../models/users.models.js"
+import message from "../error/error.messages.js";
+import successMessage from "../error/success.messages.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import { v4 as uuidv4 } from "uuid";
+import { Op } from "sequelize";
 
-//   const { name, contact_number, password } = req.body;
+export const createUser = async (req, res) => {
+  try {
+    const { name, contact_number, password } = req.body;
+    
+    // Check if user already exists
+    const existingUser = await User.findOne({
+      where: {
+        [Op.or]: [{ name: name }, { contact_number: contact_number }],
+      },
+    });
+    if (existingUser) {
+      return res
+        .status()
+        .json({ message: successMessage.USER_ALREADY_EXISTS });
+    }
 
-//   try {
-//     const existingUser = await User.findOne({ contact_number });
-//     if (existingUser) {
-//       return res.status(400).json({ message: "User already exists" });
-//     }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({
+      id: uuidv4(),
+      name,
+      contact_number,
+      password: hashedPassword,
+    });
 
-//     const user = new User({
-//       name,
-//       contact_number,
-//       password,
-//     });
+    await user.save();
+    res.status(201).json({ message: successMessage.REGISTRATION_SUCCESSFULLY });
+  } catch (error) {
+    res.status(500).json({ error: message.INTERNAL_SERVER_ERROR });
+  }
+};
 
-//     await user.save();
-//     res.status(201).json({ message: "User registered successfully" });
-//   } catch (error) {
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// };
-// // User Login Controller
-// export const loginUser = async (req, res) => {
-//   const { contact_number, password } = req.body;
+export const loginUser = async (req, res) => {
+  try {
+    const { contact_number, password } = req.body;
+    
+    const user = await User.findOne({
+      where: {
+        contact_number: contact_number,
+        status: true, // Ensure the user is active
+      },
+    });    
+    if (!user) {
+      return res.status(404).json({ message: successMessage.USER_NOT_FOUND });
+    }
 
-//   try {
-//     const user = await
-//       User.findOne({ contact_number });
-//     if (!user) {
-//       return res.status(400).json({ message: "Invalid credentials" });
-//     }
-//     const isMatch = await bcrypt.compare(password, user.password);
-//     if (!isMatch) {
-//       return res.status(400).json({ message: "Invalid credentials" });
-//     }
-//     const token = await user.generateAuthToken();
-//     res.cookie("token", token, {
-//       httpOnly: true,
-//       secure: process.env.NODE_ENV === "production",
-//       sameSite: "strict",
-//     });
-//     res.status(200).json({
-//       message: "Login successful",
-//       user: {
-//         id: user._id,
-//         name: user.name,
-//         contact_number: user.contact_number,
-//       },
-//     });
-//   }
-//   catch (error) {
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// }
-// // Fetch User Details Controller
-// export const getUserDetails = async (req, res) => {
-//   try {
-//     const user = await User.findById(req.user._id).select("-password -tokens");
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-//     res.status(200).json(user);
-//   } catch (error) {
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// }
-// // Logout User Controller
-// export const logoutUser = async (req, res) => {
-//   try {
-//     req.user.tokens = req.user.tokens.filter((token) => token.token !== req.token);
-//     await req.user.save();
-//     res.clearCookie("token");
-//     res.status(200).json({ message: "Logout successful" });
-//   } catch (error) {
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// }
-// // Middleware to authenticate user
-// export const authenticateUser = async (req, res, next) => {
-//   const token = req.cookies.token;
-//   if (!token) {
-//     return res.status(401).json({ message: "Unauthorized" });
-//   }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res
+        .status(401)
+        .json({ message: successMessage.INVALID_CREDENTIALS });
+    }
 
-//   try {
-//     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-//     const user = await User.findById(decoded._id
-//     ).select("-password -tokens");
-//     if (!user) {
-//       return res.status(401).json({ message: "Unauthorized" });
-//     }
-//     req.user = user;
-//     req.token = token;
-//     next();
-//   }
-//   catch (error) {
-//     res.status(401).json({ message: "Unauthorized", error: error.message });
-//   }
-// }
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    res.status(200).json({
+      message: successMessage.LOGIN_SUCCESSFULLY,
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        contact_number: user.contact_number,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ error: message.INTERNAL_SERVER_ERROR });
+  }
+};
+
+export const findAllUsers = async (req, res) => {
+  try {
+    const users = await User.findAll({
+      where: { status: true }, // Only active users
+      attributes: ["id", "name", "contact_number", "created_at"],
+    });
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: message.INTERNAL_SERVER_ERROR });
+  }
+};
+
+export const findUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findOne({
+      where: { id, status: true },
+      attributes: ["id", "name", "contact_number", "created_at"],
+    });
+    if (!user) {
+      return res.status(404).json({ message: successMessage.USER_NOT_FOUND });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: message.INTERNAL_SERVER_ERROR });
+  }
+};
+
+export const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, contact_number, password } = req.body;
+
+    const user = await User.findOne({ where: { id, status: true } });
+    if (!user) {
+      return res.status(404).json({ message: successMessage.USER_NOT_FOUND });
+    }
+
+    if (password) {
+      user.password = await bcrypt.hash(password, 10);
+    }
+    user.name = name || user.name;
+    user.contact_number = contact_number || user.contact_number;
+
+    await user.save();
+    res.status(200).json({ message: successMessage.PROFILE_UPDATED_SUCCESSFULLY });
+  } catch (error) {
+    res.status(500).json({ error: message.INTERNAL_SERVER_ERROR });
+  }
+};
+
+export const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findOne({ where: { id, status: true } });
+    if (!user) {
+      return res.status(404).json({ message: successMessage.USER_NOT_FOUND });
+    }
+    user.status = false; // Soft delete
+    await user.save();
+    res.status(200).json({ message: successMessage.USER_DELETED_SUCCESSFULLY });
+  } catch (error) {
+    res.status(500).json({ error: successMessage.INTERNAL_SERVER_ERROR });
+  }
+};
+export default {
+  createUser,
+  loginUser,
+  findAllUsers,
+  findUserById,
+  updateUser,
+  deleteUser,
+};

@@ -3,6 +3,4 @@ const message = {
   SOMETHING_WENT_WRONG: 'Something went wrong',
 }
 
-module.exports = {
-  message,
-}
+export default message;

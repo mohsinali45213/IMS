@@ -1,90 +1,68 @@
-import mongoose from "mongoose";
-import validator from "validator";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import Sequelize from "sequelize";
+import sequelize from "../db/db.js";
 
-const userSchema = new mongoose.Schema(
+const User = sequelize.define(
+  "user",
   {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
+    id: {
+      type: Sequelize.UUID,
+      primaryKey: true,
+      defaultValue: Sequelize.UUIDV4,
     },
+    name: {
+      type: Sequelize.STRING(36),
+      allowNull: true,
+    },
+
     contact_number: {
-      type: String,
-      required: true,
-      unique: true,
-      validate(value) {
-        if (!validator.isMobilePhone(value, "any", { strictMode: false })) {
-          throw new Error("Invalid phone number");
-        }
-      },
+      type: Sequelize.STRING(36),
+      allowNull: true,
     },
     password: {
-      type: String,
-      required: true,
-      minlength: 8,
+      type: Sequelize.STRING(255),
+      allowNull: true,
     },
+
     status: {
-      type: Boolean,
-      default: true, // true for active, false for inactive
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
     },
     created_by: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: Sequelize.UUID,
+      allowNull: true,
     },
     modified_by: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: Sequelize.UUID,
+      allowNull: true,
     },
     deleted_by: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: Sequelize.UUID,
+      allowNull: true,
     },
     created_at: {
-      type: Date,
-      default: Date.now,
+      type: Sequelize.DATE,
+      allowNull: true,
     },
     modified_at: {
-      type: Date,
-      default: Date.now,
+      type: Sequelize.DATE,
+      allowNull: true,
     },
     deleted_at: {
-      type: Date,
-      default: null,
+      type: Sequelize.DATE,
+      allowNull: true,
     },
-
-    tokens: [
-      {
-        token: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
   },
+  {
+    tableName: "users",
+    timestamps: true,
+    paranoid: true,
+    underscored: true,
+    createdAt: "created_at",
+    updatedAt: "modified_at",
+    deletedAt: "deleted_at",
+  }
 );
 
-//password hashing
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-
-  this.password = await bcrypt.hash(this.password, 10);
-
-  next();
-});
-
-//token generate
-userSchema.methods.generateAuthToken = async function () {
-  try {
-    let token = jwt.sign({ _id: this._id }, process.env.SECRET_KEY);
-    this.tokens = this.tokens.concat({ token });
-    await this.save();
-    return token;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const User = mongoose.model("User", userSchema);
 export default User;
+export { User };
