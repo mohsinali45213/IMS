@@ -1,34 +1,38 @@
-import sequelize from "../db/db.js"; 
-import Sequelize from "sequelize";
-
+import sequelize from "../db/db.js";
+import { DataTypes } from "sequelize";
 const Brand = sequelize.define(
   "brand",
   {
     id: {
-      type: Sequelize.UUID,
+      type: DataTypes.UUID,
       primaryKey: true,
-      defaultValue: Sequelize.UUIDV4,
+      defaultValue: DataTypes.UUIDV4,
     },
     name: {
-      type: Sequelize.STRING(100),
+      type: DataTypes.STRING(100),
       allowNull: false,
       unique: true,
     },
     slug: {
-      type: Sequelize.STRING(100),
+      type: DataTypes.STRING(100),
       allowNull: false,
       unique: true,
     },
     status: {
-      type: Sequelize.BOOLEAN,
+      type: DataTypes.ENUM("active", "inactive"),
       allowNull: false,
-      defaultValue: true,
+      defaultValue: "active",
     },
   },
-  {
-    tableName: "brands",
-    timestamps: true,
-  }
+  { tableName: "brands", timestamps: true }
 );
+
+// Associations
+Brand.associate = (models) => {
+  Brand.hasMany(models.Product, {
+    foreignKey: "brandId",
+    as: "products",
+  });
+};
 
 export default Brand;

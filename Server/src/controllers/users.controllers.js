@@ -1,5 +1,5 @@
 
-import {User} from "../models/users.models.js"
+import User from "../models/users.models.js"
 import message from "../error/error.messages.js";
 import successMessage from "../error/success.messages.js";
 import jwt from "jsonwebtoken";

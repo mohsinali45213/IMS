@@ -1,100 +1,132 @@
 import Brand from "../models/brand.models.js";
-import { Op } from "sequelize";
+import slugify from "../utils/slugify.js";
 
-const createBrand = async (req, res) => {
+// ✅ Create a new brand
+export const createBrand = async (req, res) => {
   try {
-    const { name } = req.body;
-    const slug = name.toLowerCase().replace(/\s+/g, '-');
-    // Check if brand already exists
-    const existingBrand = await Brand.findOne({
-      where: { slug: slug },
+    const { name, status } = req.body;
+
+    const slug = slugify(name);
+
+    const newBrand = await Brand.create({ name, slug, status });
+
+    return res.status(201).json({
+      success: true,
+      message: "Brand created successfully",
+      data: newBrand,
     });
-    if (existingBrand) {
-      return res.status(400).json({ message: "Brand already exists" });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to create brand",
+      error: error.message,
+    });
+  }
+};
+
+// ✅ Update brand by ID
+export const updateBrand = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, status } = req.body;
+
+    const brand = await Brand.findByPk(id);
+
+    if (!brand) {
+      return res.status(404).json({
+        success: false,
+        message: "Brand not found",
+      });
     }
 
-    const newBrand = await Brand.create({ name, slug });
-    res.status(201).json(newBrand);
-  } catch (error) {
-    console.error("Error creating brand:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-}
+    const slug = slugify(name);
 
-const getAllBrands = async (req, res) => {
+    await brand.update({ name, slug, status });
+
+    return res.status(200).json({
+      success: true,
+      message: "Brand updated successfully",
+      data: brand,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update brand",
+      error: error.message,
+    });
+  }
+};
+
+// ✅ Get all brands
+export const getAllBrands = async (req, res) => {
   try {
     const brands = await Brand.findAll();
-    res.status(200).json(brands);
+
+    return res.status(200).json({
+      success: true,
+      message: "Brands fetched successfully",
+      data: brands,
+    });
   } catch (error) {
-    console.error("Error fetching brands:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch brands",
+      error: error.message,
+    });
   }
 };
 
-const getBrandById = async (req, res) => {
+// ✅ Get brand by ID
+export const getBrandById = async (req, res) => {
   try {
     const { id } = req.params;
     const brand = await Brand.findByPk(id);
 
     if (!brand) {
-      return res.status(404).json({ message: "Brand not found" });
-    }
-
-    res.status(200).json(brand);
-  } catch (error) {
-    console.error("Error fetching brand:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
-
-const updateBrand = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { name, slug } = req.body;
-
-    const brand = await Brand.findByPk(id);
-    if (!brand) {
-      return res.status(404).json({ message: "Brand not found" });
-    }
-
-    // Check if the new slug already exists
-    if (slug) {
-      const existingBrand = await Brand.findOne({
-        where: { slug: slug, id: { [Op.ne]: id } },
+      return res.status(404).json({
+        success: false,
+        message: "Brand not found",
       });
-      if (existingBrand) {
-        return res.status(400).json({ message: "Brand with this slug already exists" });
-      }
     }
 
-    await brand.update({ name, slug });
-    res.status(200).json(brand);
+    return res.status(200).json({
+      success: true,
+      message: "Brand fetched successfully",
+      data: brand,
+    });
   } catch (error) {
-    console.error("Error updating brand:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch brand",
+      error: error.message,
+    });
   }
 };
 
-const deleteBrand = async (req, res) => {
+// ✅ Delete brand by ID
+export const deleteBrand = async (req, res) => {
   try {
     const { id } = req.params;
     const brand = await Brand.findByPk(id);
+
     if (!brand) {
-      return res.status(404).json({ message: "Brand not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Brand not found",
+      });
     }
 
     await brand.destroy();
-    res.status(200).json({ message: "Brand deleted successfully" });
+
+    return res.status(200).json({
+      success: true,
+      message: "Brand deleted successfully",
+    });
   } catch (error) {
-    console.error("Error deleting brand:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to delete brand",
+      error: error.message,
+    });
   }
 };
-
-export {
-  createBrand,
-  getAllBrands,
-  getBrandById,
-  updateBrand,
-  deleteBrand
-}

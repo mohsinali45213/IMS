@@ -1,145 +1,134 @@
 import Category from "../models/category.models.js";
-import SubCategory from "../models/subCategory.modules.js";
-import { Op } from "sequelize";
+import slugify from "../utils/slugify.js";
 
-const createCategory = async (req, res) => {
+// ✅ Create Category
+export const createCategory = async (req, res) => {
   try {
-    const { name } = req.body;
-    const slug = name.toLowerCase().replace(/\s+/g, '-');
-    // Check if category already exists
-    const existingCategory = await Category.findOne({
-      where: { slug: slug },
-    });
-    if (existingCategory) {
-      return res.status(400).json({ message: "Category already exists" });
-    }
+    const { name, status } = req.body;
 
-    const newCategory = await Category.create({ name, slug });
-    res.status(201).json(newCategory);
+    const slug = slugify(name);
+
+    const newCategory = await Category.create({ name, slug, status });
+
+    res.status(201).json({
+      success: true,
+      message: "Category created successfully",
+      data: newCategory,
+    });
   } catch (error) {
-    console.error("Error creating category:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({
+      success: false,
+      message: "Failed to create category",
+      error: error.message,
+    });
   }
 };
 
-const getAllCategories = async (req, res) => {
+// ✅ Get All Categories
+export const getAllCategories = async (req, res) => {
   try {
-    const categories = await Category.findAll({
-      include: [
-        {
-          model: SubCategory,
-          as: "subCategories",
-          attributes: ["id", "name", "slug", "status"],
-        },
-      ],
+    const categories = await Category.findAll();
+
+    res.status(200).json({
+      success: true,
+      message: "Categories fetched successfully",
+      data: categories,
     });
-    res.status(200).json(categories);
   } catch (error) {
-    console.error("Error fetching categories:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch categories",
+      error: error.message,
+    });
   }
 };
 
-const getCategoryById = async (req, res) => {
+// ✅ Get Category by ID
+export const getCategoryById = async (req, res) => {
   try {
     const { id } = req.params;
-    const category = await Category.findByPk(id, {
-      include: [
-        {
-          model: SubCategory,
-          as: "subCategories",
-          attributes: ["id", "name", "slug", "status"],
-        },
-      ],
-    });
-
-    if (!category) {
-      return res.status(404).json({ message: "Category not found" });
-    }
-
-    res.status(200).json(category);
-  } catch (error) {
-    console.error("Error fetching category:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
-
-const updateCategory = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { name } = req.body;
-    const slug = name ? name.toLowerCase().replace(/\s+/g, '-') : undefined;
 
     const category = await Category.findByPk(id);
+
     if (!category) {
-      return res.status(404).json({ message: "Category not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
     }
 
-    // Check if slug already exists for another category
-    const existingCategory = await Category.findOne({
-      where: { slug, id: { [Op.ne]: id } },
+    res.status(200).json({
+      success: true,
+      message: "Category fetched successfully",
+      data: category,
     });
-    if (existingCategory) {
-      return res.status(400).json({ message: "Slug already exists" });
-    }
-
-    category.name = name || category.name;
-    category.slug = slug || category.slug;
-    await category.save();
-
-    res.status(200).json(category);
   } catch (error) {
-    console.error("Error updating category:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch category",
+      error: error.message,
+    });
   }
 };
 
-const deleteCategory = async (req, res) => {
+// ✅ Update Category
+export const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
+    const { name, status } = req.body;
+
     const category = await Category.findByPk(id);
+
     if (!category) {
-      return res.status(404).json({ message: "Category not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    const slug = slugify(name);
+
+    await category.update({ name, slug, status });
+
+    res.status(200).json({
+      success: true,
+      message: "Category updated successfully",
+      data: category,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to update category",
+      error: error.message,
+    });
+  }
+};
+
+// ✅ Delete Category
+export const deleteCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const category = await Category.findByPk(id);
+
+    if (!category) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
     }
 
     await category.destroy();
-    res.status(200).json({ message: "Category deleted successfully" });
+
+    res.status(200).json({
+      success: true,
+      message: "Category deleted successfully",
+    });
   } catch (error) {
-    console.error("Error deleting category:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete category",
+      error: error.message,
+    });
   }
 };
-
-const searchCategories = async (req, res) => {
-  try {
-    const { query } = req.query;
-    const categories = await Category.findAll({
-      where: {
-        name: {
-          [Op.iLike]: `%${query}%`, // Case-insensitive search
-        },
-      },
-      include: [
-        {
-          model: SubCategory,
-          as: "subCategories",
-          attributes: ["id", "name", "slug", "status"],
-        },
-      ],
-    });
-
-    res.status(200).json(categories);
-  } catch (error) {
-    console.error("Error searching categories:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};  
-
-export{
-  createCategory,
-  getAllCategories,
-  getCategoryById,
-  updateCategory,
-  deleteCategory,
-  searchCategories
-}

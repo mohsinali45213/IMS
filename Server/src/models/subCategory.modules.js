@@ -1,54 +1,48 @@
-import Sequelize from "sequelize";
+import { DataTypes } from "sequelize";
 import sequelize from "../db/db.js";
-import Category from "./category.models.js"; // ✅ Import the related model
 
 const SubCategory = sequelize.define(
   "sub_category",
   {
     id: {
-      type: Sequelize.UUID,
+      type: DataTypes.UUID,
       primaryKey: true,
-      defaultValue: Sequelize.UUIDV4,
+      defaultValue: DataTypes.UUIDV4,
     },
     name: {
-      type: Sequelize.STRING(100),
+      type: DataTypes.STRING(100),
       allowNull: false,
       unique: true,
     },
     slug: {
-      type: Sequelize.STRING(100),
+      type: DataTypes.STRING(100),
       allowNull: false,
       unique: true,
     },
-    categoryId: { // ✅ FK to Category.id
-      type: Sequelize.UUID,
+    categoryId: {
+      type: DataTypes.UUID,
       allowNull: false,
-      references: {
-        model: "categories", // Must match table name of Category
-        key: "id",
-      },
+      references: { model: "categories", key: "id" },
     },
     status: {
-      type: Sequelize.BOOLEAN,
+      type: DataTypes.ENUM("active", "inactive"),
       allowNull: false,
-      defaultValue: true,
+      defaultValue: "active",
     },
   },
-  {
-    tableName: "sub_categories",
-    timestamps: true,
-  }
+  { tableName: "sub_categories", timestamps: true }
 );
 
-// ✅ Setup associations properly
-SubCategory.belongsTo(Category, {
-  foreignKey: "categoryId",
-  as: "categoryDetails",
-});
-
-Category.hasMany(SubCategory, {
-  foreignKey: "categoryId",
-  as: "subCategories",
-});
-
+// Associations
+SubCategory.associate = (models) => {
+  SubCategory.belongsTo(models.Category, {
+    foreignKey: "categoryId",
+    as: "category",
+  });
+  SubCategory.hasMany(models.Product, {
+    foreignKey: "subCategoryId",
+    as: "products",
+  });
+  
+};
 export default SubCategory;

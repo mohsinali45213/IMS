@@ -1,55 +1,41 @@
-import Sequelize from "sequelize";
+import { DataTypes } from "sequelize";
 import sequelize from "../db/db.js";
 
 const User = sequelize.define(
   "user",
   {
     id: {
-      type: Sequelize.UUID,
+      type: DataTypes.UUID,
       primaryKey: true,
-      defaultValue: Sequelize.UUIDV4,
+      defaultValue: DataTypes.UUIDV4,
     },
     name: {
-      type: Sequelize.STRING(36),
+      type: DataTypes.STRING(36),
       allowNull: true,
     },
-
     contact_number: {
-      type: Sequelize.STRING(36),
+      type: DataTypes.STRING(36),
       allowNull: true,
     },
     password: {
-      type: Sequelize.STRING(255),
+      type: DataTypes.STRING(255),
       allowNull: true,
     },
-
     status: {
-      type: Sequelize.BOOLEAN,
+      type: DataTypes.ENUM("active", "inactive"),
       allowNull: false,
-      defaultValue: true,
+      defaultValue: "active",
     },
     created_by: {
-      type: Sequelize.UUID,
+      type: DataTypes.UUID,
       allowNull: true,
     },
     modified_by: {
-      type: Sequelize.UUID,
+      type: DataTypes.UUID,
       allowNull: true,
     },
     deleted_by: {
-      type: Sequelize.UUID,
-      allowNull: true,
-    },
-    created_at: {
-      type: Sequelize.DATE,
-      allowNull: true,
-    },
-    modified_at: {
-      type: Sequelize.DATE,
-      allowNull: true,
-    },
-    deleted_at: {
-      type: Sequelize.DATE,
+      type: DataTypes.UUID,
       allowNull: true,
     },
   },
@@ -65,4 +51,3 @@ const User = sequelize.define(
 );
 
 export default User;
-export { User };

@@ -1,127 +1,164 @@
 import SubCategory from "../models/subCategory.modules.js";
 import Category from "../models/category.models.js";
-import { Op } from "sequelize";
+import slugify from "../utils/slugify.js"; // a simple slug generator
 
-const createSubCategory = async (req, res) => {
+// ✅ Create SubCategory
+export const createSubCategory = async (req, res) => {
   try {
-    const { name, categoryId } = req.body;
-    const slug = name ? name.toLowerCase().replace(/\s+/g, '-') : undefined;
+    const { name, categoryId, status } = req.body;
 
-    // Check if sub-category already exists
-    const existingSubCategory = await SubCategory.findOne({
-      where: { slug: slug },
-    });
-    if (existingSubCategory) {
-      return res.status(400).json({ message: "Sub-category already exists" });
+    const category = await Category.findByPk(categoryId);
+    if (!category) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Category not found" });
     }
 
-    const newSubCategory = await SubCategory.create({
+    const slug = slugify(name);
+
+    const subCategory = await SubCategory.create({
       name,
       slug,
       categoryId,
+      status,
     });
-    res.status(201).json(newSubCategory);
+
+    res.status(201).json({
+      success: true,
+      message: "Subcategory created successfully",
+      data: subCategory,
+    });
   } catch (error) {
-    console.error("Error creating sub-category:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({
+      success: false,
+      message: "Failed to create subcategory",
+      error: error.message,
+    });
   }
 };
 
-const getAllSubCategories = async (req, res) => {
+// ✅ Get All SubCategories
+export const getAllSubCategories = async (req, res) => {
   try {
     const subCategories = await SubCategory.findAll({
-      include: [
-        {
-          model: Category,
-          as: "categoryDetails",
-          attributes: ["id", "name", "slug"],
-        },
-      ],
+      include: [{ model: Category, as: "category" }],
     });
-    res.status(200).json(subCategories);
+
+    
+    res.status(200).json({
+      success: true,
+      message: "Subcategories fetched successfully",
+      data: subCategories,
+    });
   } catch (error) {
-    console.error("Error fetching sub-categories:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch subcategories",
+      error: error.message,
+    });
   }
 };
 
-const getSubCategoryById = async (req, res) => {
+// ✅ Get SubCategory By ID
+export const getSubCategoryById = async (req, res) => {
   try {
     const { id } = req.params;
+
     const subCategory = await SubCategory.findByPk(id, {
-      include: [
-        {
-          model: Category,
-          as: "categoryDetails",
-          attributes: ["id", "name", "slug"],
-        },
-      ],
+      include: [{ model: Category, as: "category" }],
     });
 
     if (!subCategory) {
-      return res.status(404).json({ message: "Sub-category not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Subcategory not found",
+      });
     }
 
-    res.status(200).json(subCategory);
-  } catch (error) {
-    console.error("Error fetching sub-category:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
-
-const updateSubCategory = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { name, categoryId } = req.body;
-    const slug = name ? name.toLowerCase().replace(/\s+/g, '-') : undefined;
-    const subCategory = await SubCategory.findByPk(id);
-    if (!subCategory) {
-      return res.status(404).json({ message: "Sub-category not found" });
-    }
-
-    // Check if slug already exists for another sub-category
-    const existingSubCategory = await SubCategory.findOne({
-      where: {
-        slug: slug,
-        id: { [Op.ne]: id }, // Exclude current sub-category
-      },
+    res.status(200).json({
+      success: true,
+      message: "Subcategory fetched successfully",
+      data: subCategory,
     });
-    if (existingSubCategory) {
-      return res.status(400).json({ message: "Slug already exists" });
-    }
-
-    subCategory.name = name || subCategory.name;
-    subCategory.slug = slug || subCategory.slug;
-    subCategory.categoryId = categoryId || subCategory.categoryId;
-
-    await subCategory.save();
-    res.status(200).json(subCategory);
   } catch (error) {
-    console.error("Error updating sub-category:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch subcategory",
+      error: error.message,
+    });
   }
 };
 
-const deleteSubCategory = async (req, res) => {
+// ✅ Update SubCategory
+export const updateSubCategory = async (req, res) => {
   try {
     const { id } = req.params;
+    const { name, categoryId, status } = req.body;
+
     const subCategory = await SubCategory.findByPk(id);
     if (!subCategory) {
-      return res.status(404).json({ message: "Sub-category not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Subcategory not found" });
+    }
+
+    if (categoryId) {
+      const category = await Category.findByPk(categoryId);
+      if (!category) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Category not found" });
+      }
+    }
+
+    const updatedSlug = name ? slugify(name) : subCategory.slug;
+
+    await subCategory.update({
+      name: name || subCategory.name,
+      slug: updatedSlug,
+      categoryId: categoryId || subCategory.categoryId,
+      status: status || subCategory.status,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Subcategory updated successfully",
+      data: subCategory,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to update subcategory",
+      error: error.message,
+    });
+  }
+};
+
+// ✅ Delete SubCategory
+export const deleteSubCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const subCategory = await SubCategory.findByPk(id);
+
+    if (!subCategory) {
+      return res.status(404).json({
+        success: false,
+        message: "Subcategory not found",
+      });
     }
 
     await subCategory.destroy();
-    res.status(200).json({ message: "Sub-category deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting sub-category:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};  
 
-export {
-  createSubCategory,
-  getAllSubCategories,
-  getSubCategoryById,
-  updateSubCategory,
-  deleteSubCategory
-}
+    res.status(200).json({
+      success: true,
+      message: "Subcategory deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete subcategory",
+      error: error.message,
+    });
+  }
+};

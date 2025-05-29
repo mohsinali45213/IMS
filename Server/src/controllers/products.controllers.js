@@ -1,170 +1,175 @@
-import { Product, ProductSize } from "../models/products.models.js";
-import { Op } from "sequelize";
+import Product from "../models/products.models.js";
+import slugify from "../utils/slugify.js";
 
-// ✅ Create a new product
+// ✅ Create Product
 export const createProduct = async (req, res) => {
   try {
     const {
       name,
-      price,
-      categoryId,
-      subCategoryId,
       brandId,
-      barcode,
-      itemCode,
+      subCategoryId,
       image,
-      sizes, // [{ size: "M", quantity: 10 }, { size: "L", quantity: 5 }]
+      // categoryId,
     } = req.body;
 
-    const slug = name.toLowerCase().replace(/ /g, "-");
-    let stock = 0; // Default stock value
-    if (sizes && Array.isArray(sizes)) {
-      stock = sizes.reduce((total, size) => total + (size.quantity || 0), 0);
-    }
-    const newProduct = await Product.create({
+    const slug = slugify(name);
+
+    const product = await Product.create({
       name,
       slug,
-      price,
-      stock,
-      categoryId,
-      subCategoryId,
       brandId,
-      barcode,
-      itemCode,
+      // categoryId,
+      subCategoryId,
       image,
     });
 
-    // Add associated sizes if provided
-    if (sizes && Array.isArray(sizes)) {
-      const sizeEntries = sizes.map((s) => ({
-        productId: newProduct.id,
-        size: s.size,
-        quantity: s.quantity,
-      }));
-      await ProductSize.bulkCreate(sizeEntries);
-    }
-
-    const productWithAssociations = await Product.findByPk(newProduct.id, {
-      include: ["category", "subCategory", "brand", "sizes"],
+    res.status(201).json({
+      success: true,
+      message: "Product created successfully",
+      data: product,
     });
-
-    res.status(201).json(productWithAssociations);
-  } catch (err) {
-    console.error("Error creating product:", err);
-    res.status(500).json({ message: "Server Error", error: err.message });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to create product",
+      error: error.message,
+    });
   }
 };
 
-// ✅ Get all products (with optional filtering)
+// ✅ Get All Products
 export const getAllProducts = async (req, res) => {
   try {
-    const { name, categoryId, brandId } = req.query;
-    const where = {};
-
-    if (name) where.name = { [Op.like]: `%${name}%` };
-    if (categoryId) where.categoryId = categoryId;
-    if (brandId) where.brandId = brandId;
-
     const products = await Product.findAll({
-      where,
-      include: ["category", "subCategory", "brand", "sizes"],
-      order: [["createdAt", "DESC"]],
+      include: [
+        // { association: "category" },
+        { association: "brand" },
+        { association: "subCategory" },
+        { association: "sizes" },
+      ],
     });
 
-    res.status(200).json(products);
-  } catch (err) {
-    console.error("Error fetching products:", err);
-    res.status(500).json({ message: "Server Error" });
+    res.status(200).json({
+      success: true,
+      message: "Products fetched successfully",
+      data: products,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch products",
+      error: error.message,
+    });
   }
 };
 
-// ✅ Get single product by ID
+// ✅ Get Product by ID
 export const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
 
     const product = await Product.findByPk(id, {
-      include: ["category", "subCategory", "brand", "sizes"],
+      include: [
+        // { association: "category" },
+        { association: "brand" },
+        { association: "subCategory" },
+        { association: "sizes" },
+      ],
     });
 
-    if (!product) return res.status(404).json({ message: "Product not found" });
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
 
-    res.status(200).json(product);
-  } catch (err) {
-    console.error("Error fetching product:", err);
-    res.status(500).json({ message: "Server Error" });
+    res.status(200).json({
+      success: true,
+      message: "Product fetched successfully",
+      data: product,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch product",
+      error: error.message,
+    });
   }
 };
 
-// ✅ Update a product
+// ✅ Update Product
 export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
 
+    const {
+      name,
+      brandId,
+      // categoryId,
+      subCategoryId,
+      image,
+    } = req.body;
+
     const product = await Product.findByPk(id);
-    if (!product) return res.status(404).json({ message: "Product not found" });
-    req.body.slug = req.body.name.toLowerCase().replace(/ /g, "-");
 
-    await product.update(req.body);
-
-    // If sizes are passed for update
-    if (req.body.sizes) {
-      await ProductSize.destroy({ where: { productId: id } }); // Remove existing sizes
-      const sizeEntries = req.body.sizes.map((s) => ({
-        productId: id,
-        size: s.size,
-        quantity: s.quantity,
-      }));
-      await ProductSize.bulkCreate(sizeEntries);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
     }
 
-    const updatedProduct = await Product.findByPk(id, {
-      include: ["category", "subCategory", "brand", "sizes"],
+    const slug = slugify(name);
+
+    await product.update({
+      name,
+      slug,
+      brandId,
+      // categoryId,
+      subCategoryId,
+      image,
     });
 
-    res.status(200).json(updatedProduct);
-  } catch (err) {
-    console.error("Error updating product:", err);
-    res.status(500).json({ message: "Server Error" });
+    res.status(200).json({
+      success: true,
+      message: "Product updated successfully",
+      data: product,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to update product",
+      error: error.message,
+    });
   }
 };
 
-// ✅ Delete a product
+// ✅ Delete Product
 export const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
 
     const product = await Product.findByPk(id);
-    if (!product) return res.status(404).json({ message: "Product not found" });
 
-    await ProductSize.destroy({ where: { productId: id } }); // Remove sizes first
-    await product.destroy();
-
-    res.status(200).json({ message: "Product deleted successfully" });
-  } catch (err) {
-    console.error("Error deleting product:", err);
-    res.status(500).json({ message: "Server Error" });
-  }
-};
-
-// Sort products by price ,category, brand, and stock
-export const sortProducts = async (req, res) => {
-  try {
-    const { sortBy, order = "ASC" } = req.query;
-
-    const validSortFields = ["price", "categoryId", "brandId", "stock"];
-    if (!validSortFields.includes(sortBy)) {
-      return res.status(400).json({ message: "Invalid sort field" });
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
     }
 
-    const products = await Product.findAll({
-      include: ["category", "subCategory", "brand", "sizes"],
-      order: [[sortBy, order]],
-    });
+    await product.destroy();
 
-    res.status(200).json(products);
-  } catch (err) {
-    console.error("Error sorting products:", err);
-    res.status(500).json({ message: "Server Error" });
+    res.status(200).json({
+      success: true,
+      message: "Product deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete product",
+      error: error.message,
+    });
   }
 };
