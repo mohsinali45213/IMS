@@ -1,0 +1,98 @@
+.create-product-container {
+  max-width: 1200px;
+  margin: .2rem auto;
+  padding: 2.5rem;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+}
+
+.header-section {
+  text-align: left;
+  margin-bottom: 4rem;
+}
+
+.header-section h2 {
+  font-size: 1.58rem;
+  color: #333;
+}
+
+.subtitle {
+  color: #777;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
+
+.product-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #444;
+}
+
+input, select {
+  padding: 0.75rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #7b5cf5;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(123, 92, 245, 0.15);
+}
+
+
+.form-actions {
+  margin-top: 4rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.submit-button {
+  background-color: #7b5cf5;
+  color: white;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #6344f0;
+}
+
+.cancel-button {
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: #e0e0e0;
+}

@@ -19,6 +19,7 @@ body{
 .li.active {
   border-right: 3px solid #f60;
   border-left: 3px solid #f60;
+  background-color: rgb(255, 233, 206);
   box-shadow: 0 0 3px #f60;
   transition: all 0.3s ease;
 }

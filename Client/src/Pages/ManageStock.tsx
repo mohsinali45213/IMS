@@ -5,7 +5,13 @@ import {
   MdAddCircleOutline,
 } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
+import { useState } from "react";
+import Addmanagestock from "../Components/Addmanagestock";
 const ManageStock = () => {
+    const [toggle, setToggle] = useState(false);
+    const handleToggle = () => {
+      setToggle(!toggle);
+    };
   return (
     <div className="products-container">
       <div className="title">
@@ -13,7 +19,7 @@ const ManageStock = () => {
           <h2>Product List</h2>
           <h3>Manage your products</h3>
         </div>
-        <button>
+        <button onClick={handleToggle}>
           <span>
             <MdAddCircleOutline />
           </span>
@@ -91,6 +97,7 @@ const ManageStock = () => {
           ))}
         </table>
       </div>
+       {toggle && <Addmanagestock handleToggle={handleToggle} />}
     </div>
   );
 };

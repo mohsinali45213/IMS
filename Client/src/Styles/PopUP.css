@@ -1,4 +1,4 @@
-.pop-up-wrapper {
+/* .pop-up-wrapper {
   position: fixed;
   top: 0;
   left: 0;
@@ -16,26 +16,26 @@
   border-radius: 5px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   width: 40%;
-}
+} */
 
-.pop-up-container form {
+/* .pop-up-container form {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; */
   /* background-color: white; */
-  padding: 20px;
-  border-radius: 5px;
+  /* padding: 20px;
+  border-radius: 5px; */
   /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
-}
+/* } */
 
-.pop-up-container form h2 {
+/* .pop-up-container form h2 {
   padding-bottom: 1rem;
 }
 .pop-up-container form label {
   margin:5px 0 2px 5px;
-  font-size: 0.9rem;
+  font-size: 0.9rem; */
   /* font-weight: bold; */
-}
-
+/* } */
+/* 
 .pop-up-container form input,
 .pop-up-container form select {
   margin-bottom: 10px;
@@ -58,3 +58,217 @@
   cursor: pointer;
   width: 100%;
 }
+
+.file-input {
+  margin: 10px 0;
+}
+
+.image-preview {
+  margin-top: 10px;
+  text-align: left;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 150px;
+  border-radius: 8px;
+  object-fit: contain;
+  border: 1px solid #ccc;
+  padding: 5px;
+} */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* dkh3uhdjdidjddk */
+
+/* Popup background */
+/* Wrapper for modal */
+.pop-up-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+}
+
+/* Premium modal */
+/* .pop-up-container.premium {
+  width: 700px;
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', sans-serif;
+  animation: fadeIn 0.3s ease-in-out;
+} */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+.form-title {
+  font-size: 1.75rem;
+  color: #1d4ed8; /* primary blue */
+  margin-bottom: 54px;
+  text-align: center;
+}
+
+/* Grid Layout */
+/* .form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+} */
+
+/* Form Groups */
+/* .form-group {
+  display: flex;
+  flex-direction: column;
+} */
+.form-group label {
+  font-size: 1.2rem;
+  font-weight: 400;
+  /* color: #374151; dark gray */
+  /* margin-bottom: 6px; */
+}
+
+/* Input Styling */
+input[type="text"],
+select,
+input[type="file"] {
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  transition: 0.2s ease;
+  margin-top: 6px;
+}
+
+input:focus,
+select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+  outline: none;
+}
+
+/* Image Preview */
+.image-preview {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 140px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.image-preview button {
+  padding: 6px 12px;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.image-preview button:hover {
+  background-color: #dc2626;
+}
+
+/* Button Container */
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 30px;
+}
+
+/* Buttons */
+.cancel-button {
+  padding: 10px 18px;
+  background-color: #e5e7eb;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: #d1d5db;
+}
+
+.submit-button {
+  padding: 10px 20px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #1e40af;
+}
+
+
+
+
+
+
+
+
+
+.pop-up-container.premium {
+  max-width: 800px;
+  width: 100%;
+  padding: 2rem;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* input, select {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+} */

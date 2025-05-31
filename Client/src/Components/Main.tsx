@@ -6,7 +6,9 @@ import Products from "../Pages/Products";
 import Category from "../Pages/Category";
 import SubCategory from "../Pages/SubCategory";
 import ManageStock from "../Pages/ManageStock";
-import CreateProduct from "../Pages/CreateProduct";
+import Brand from "../Pages/Brand";
+import Users from "../Pages/Users";
+// import CreateProduct from "../Pages/CreateProduct";
 
 const Main = () => {
   return (
@@ -25,12 +27,12 @@ const Main = () => {
             <Route path="/categories" element={<Category />} />
             <Route path="/sub-categories" element={<SubCategory />} />
             <Route path="/manage-stock" element={<ManageStock />} />  
-            <Route path="/create-product" element={<CreateProduct />} />
-            {/* <Route path="/brand" element={<Brand />} /> */}
+            {/* <Route path="/create-product" element={<CreateProduct />} /> */}
+            <Route path="/brand" element={<Brand />} />
             {/* <Route path="/print-barcode" element={<PrintBarcode />} /> */}
             {/* <Route path="/invoice" element={<Invoice />} /> */}
             {/* <Route path="/sales-reports" element={<SalesReports />} /> */}
-            {/* <Route path="/users" element={<Users />} /> */}
+            <Route path="/users" element={<Users />} />
 
             <Route path="*" element={<h1>404 Not Found</h1>} />
           </Routes>
