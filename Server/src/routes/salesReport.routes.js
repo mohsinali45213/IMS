@@ -1,11 +1,20 @@
-import express from 'express';
-import { createSalesReport,getSalesReport,updateSalesReport } from '../controllers/salesReport.controller.js';
-import { Router } from 'express'; 
+import {
+  createSalesReport,
+  deleteSalesReport,
+  getSalesReport,
+  getSalesReportById,
+  getSalesReportByProductId,
+  updateSalesReport,
+} from "../controllers/salesReport.controller";
 
-const salesRouter = Router();
+import { Router } from "express";
+const saleRouter = Router();
 
-salesRouter.get('/', getSalesReport);
-salesRouter.post('/', createSalesReport);
-salesRouter.put('/:id', updateSalesReport);
+saleRouter.post("/", createSalesReport);
+saleRouter.get("/", getSalesReport);
+saleRouter.get("/:id", getSalesReportById);
+saleRouter.get("/product/:productId", getSalesReportByProductId);
+saleRouter.put("/:id", updateSalesReport);
+saleRouter.delete("/:id", deleteSalesReport);
 
-export default salesRouter;
+export default saleRouter;

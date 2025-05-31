@@ -1,0 +1,24 @@
+
+
+
+.slideBarList {
+  list-style: none;
+  padding: 1rem .5rem;
+}
+
+
+.slideBarList li .li {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+  margin: 1px;
+}
+
+.slideBarList li:hover {
+  background-color: rgba(255, 166, 0, 0.277);
+}
+
+.slideBarList li span {
+  margin-right: 8px;
+}

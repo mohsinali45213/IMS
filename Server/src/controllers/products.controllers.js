@@ -1,6 +1,6 @@
 import Product from "../models/products.models.js";
 import slugify from "../utils/slugify.js";
-
+import uploadOnCloudinary from "../utils/cloudinary.js";
 // ✅ Create Product
 export const createProduct = async (req, res) => {
   try {
@@ -12,6 +12,15 @@ export const createProduct = async (req, res) => {
       // categoryId,
     } = req.body;
 
+    // Upload image to Cloudinary
+    const cloudinaryResponse = await uploadOnCloudinary(image);
+    if (!cloudinaryResponse) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to upload image",
+      });
+    }
+
     const slug = slugify(name);
 
     const product = await Product.create({
@@ -20,7 +29,7 @@ export const createProduct = async (req, res) => {
       brandId,
       // categoryId,
       subCategoryId,
-      image,
+      image: cloudinaryResponse.url, // Save the image URL from Cloudinary
     });
 
     res.status(201).json({
@@ -103,12 +112,20 @@ export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
 
+    const cloudinaryResponse = await uploadOnCloudinary(image);
+    if (!cloudinaryResponse) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to upload image",
+      });
+    }
+
     const {
       name,
       brandId,
       // categoryId,
       subCategoryId,
-      image,
+      image = cloudinaryResponse.url,
     } = req.body;
 
     const product = await Product.findByPk(id);

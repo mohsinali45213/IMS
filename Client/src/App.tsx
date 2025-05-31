@@ -1,11 +1,12 @@
+import { Routes, Route } from "react-router-dom";
+import Main from "./Components/Main";
 
-
-const App= () => {
+const App = () => {
   return (
-    <div className="App">
-      <h1>Welcome to the Client App</h1>
-      <p>This is a simple React application.</p>
-    </div>
+    <Routes>
+      <Route path="*" element={<Main />} />
+    </Routes>
   );
-}
+};
+
 export default App;

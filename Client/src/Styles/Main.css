@@ -1,0 +1,29 @@
+.slideBar {
+  width: 250px;
+  height: 100%;
+  background-color: #f8f9fa;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  z-index: 1000;
+  border-right: 1px solid #ccc;
+  position: fixed;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 250px;
+  right: 0;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 1001;
+}
+
+.content {
+  margin-left: 250px;
+  padding: 1.6rem ;
+  background-color: #f1f1f1;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease;
+  position: relative;
+  top: 70px;
+}

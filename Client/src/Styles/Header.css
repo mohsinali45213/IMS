@@ -1,0 +1,44 @@
+.header-container {
+  display: flex;
+  align-items: center;
+  gap: 5rem;
+  justify-content: space-between;
+  padding: .8rem 3rem;
+  background-color:white;
+  border-bottom: 1px solid #ccc;
+}
+.header-container .avatar img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  background-color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-container .logo{
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  text-transform: uppercase;
+}
+
+.header-container .logo span {
+  color: #f60;
+}
+.search{
+  flex:1;
+}
+.search input{
+  border: 1px solid #ccc;
+  width: 100%;
+  flex: 1;
+  padding: .5rem 1rem;
+  border-radius:5px;
+}
+
+.search input:focus{
+  outline: none;
+}
