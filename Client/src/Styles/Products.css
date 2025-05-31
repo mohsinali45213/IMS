@@ -7,13 +7,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
 }
 
 .products-container .title button {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 0.5rem 1rem;
+  padding: 0.8rem 1rem;
   border: none;
   border-radius: 5px;
   background-color: #f60;
@@ -22,8 +23,9 @@
 }
 
 .products-container .title h2 {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: bold;
+  padding-bottom: 0.3rem;
 }
 .products-container .title h3 {
   font-size: 0.8rem;
@@ -51,14 +53,17 @@
 .products-container table tr {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 1rem;
   border-bottom: 1px solid #ccc;
+  font-size: 0.8rem;
 }
 
 .products-container table th {
   text-align: start;
   align-items: center;
   width: 100%;
+  font-size: .9rem;
   flex: 1;
 }
 .products-container table td {
@@ -66,11 +71,7 @@
   align-items: center;
   /* border: 1px solid #ccc; */
   width: 100%;
-  flex: 1;
-}
-
-.products-items table tr:first-child {
-  padding: 2rem;
+  /* flex: 1; */
 }
 
 .products-items table tr td:first-child {
@@ -82,7 +83,7 @@
   padding: 0 3rem 0 0;
 }
 
-.products-items table input {
+.products-items table input[type="checkbox"] {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #ccc;
@@ -91,7 +92,8 @@
 
 .products-container table tr td:last-child {
   display: flex;
-  gap: 0.5rem;}
+  gap: 0.5rem;
+}
 
 .view-button,
 .edit-button,
@@ -100,6 +102,30 @@
   border: none;
   cursor: pointer;
   border: 1px solid #ccc;
-
+  display: grid;
   padding: 0.5rem;
+}
+
+.products-items table tr div input {
+  border: 1px solid #ccc;  
+  border-radius: 5px;
+  padding: 0.6rem;
+  width: 100%;
+}
+.products-items table tr div{
+  width: 45%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.products-items table tr div input:focus {
+  outline: none;
+}
+
+.products-items table tr div select{
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding:  0.6rem 0 ;
+  width: 100%;
 }

@@ -4,54 +4,39 @@ import {
   MdDeleteOutline,
   MdAddCircleOutline,
 } from "react-icons/md";
+import AddSubCategory from "../Components/AddSubCategory";
 import { FaRegEdit } from "react-icons/fa";
 import { useState } from "react";
-import AddProduct from "../Components/AddProduct";
-const Products = () => {
-
+const SubCategory = () => {
   const [toggle, setToggle] = useState(false);
   const handleToggle = () => {
     setToggle(!toggle);
-  };
-
+  }
   return (
     <div className="products-container">
       <div className="title">
         <div>
-          <h2>Product List</h2>
-          <h3>Manage your products</h3>
+          <h2>Sub Category</h2>
+          <h3>Manage your sub categories</h3>
         </div>
-        <button onClick={handleToggle} className="add-product-button">
+        <button onClick={handleToggle}>
           <span>
             <MdAddCircleOutline />
           </span>
-          <span>Add New Product</span>
+          <span>Add New Category</span>
         </button>
       </div>
       <div className="products-items">
         <table>
           <tr>
             <div>
-              <input type="searchItem" placeholder="Search products..." />
+              <input type="searchItem" placeholder="Search categories..." />
             </div>
             <div>
               <select>
-                <option value="">Product</option>
-                <option value="electronics">Electronics</option>
-                <option value="furniture">Furniture</option>
-                <option value="clothing">Clothing</option>
-              </select>
-              <select>
-                <option value="">Brand</option>
-                <option value="brand1">Brand 1</option>
-                <option value="brand2">Brand 2</option>
-                <option value="brand3">Brand 3</option>
-              </select>
-              <select>
-                <option value="">Category</option>
-                <option value="category1">Category 1</option>
-                <option value="category2">Category 2</option>
-                <option value="category3">Category 3</option>
+                <option value="">Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
               </select>
               <select>
                 <option value="">Sort</option>
@@ -66,12 +51,10 @@ const Products = () => {
             <th>
               <input type="checkbox" />
             </th>
-            <th>SKU</th>
-            <th>Product</th>
+            <th>Sub Category</th>
             <th>Category</th>
-            <th>Brand</th>
-            <th>Price</th>
-            <th>Stock</th>
+            <th>Slug</th>
+            <th>Status</th>
             <th>Actions</th>
           </tr>
           {Array.from({ length: 100 }).map((_, index) => (
@@ -79,16 +62,14 @@ const Products = () => {
               <td>
                 <input type="checkbox" />
               </td>
-              <td>SKU-{index + 1}</td>
-              <td>Product {index + 1}</td>
+              <td>Sub Category {index + 1}</td>
               <td>Category {index + 1}</td>
-              <td>Brand {index + 1}</td>
-              <td>${(Math.random() * 100).toFixed(2)}</td>
-              <td>{Math.floor(Math.random() * 100)}</td>
+              <td>Slug-{index + 1}</td>
+              <td style={{ color: Math.random() > 0.5 ? "green" : "red" }}>
+                {Math.random() > 0.5 ? "Active" : "Inactive"}
+              </td>
+
               <td>
-                <button className="view-button">
-                  <MdOutlineRemoveRedEye />
-                </button>
                 <button className="edit-button">
                   <FaRegEdit />
                 </button>
@@ -101,9 +82,9 @@ const Products = () => {
         </table>
       </div>
 
-      { toggle && <AddProduct toggle={handleToggle} /> }
+      {toggle && <AddSubCategory handleToggle={handleToggle} />}
     </div>
   );
 };
 
-export default Products;
+export default SubCategory;

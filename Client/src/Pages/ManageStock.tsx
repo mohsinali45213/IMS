@@ -5,15 +5,7 @@ import {
   MdAddCircleOutline,
 } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
-import { useState } from "react";
-import AddProduct from "../Components/AddProduct";
-const Products = () => {
-
-  const [toggle, setToggle] = useState(false);
-  const handleToggle = () => {
-    setToggle(!toggle);
-  };
-
+const ManageStock = () => {
   return (
     <div className="products-container">
       <div className="title">
@@ -21,7 +13,7 @@ const Products = () => {
           <h2>Product List</h2>
           <h3>Manage your products</h3>
         </div>
-        <button onClick={handleToggle} className="add-product-button">
+        <button>
           <span>
             <MdAddCircleOutline />
           </span>
@@ -72,6 +64,7 @@ const Products = () => {
             <th>Brand</th>
             <th>Price</th>
             <th>Stock</th>
+            <th>Size</th>
             <th>Actions</th>
           </tr>
           {Array.from({ length: 100 }).map((_, index) => (
@@ -85,10 +78,8 @@ const Products = () => {
               <td>Brand {index + 1}</td>
               <td>${(Math.random() * 100).toFixed(2)}</td>
               <td>{Math.floor(Math.random() * 100)}</td>
+              <td>{Math.floor(Math.random() * 5) + 1}XL</td>
               <td>
-                <button className="view-button">
-                  <MdOutlineRemoveRedEye />
-                </button>
                 <button className="edit-button">
                   <FaRegEdit />
                 </button>
@@ -100,10 +91,8 @@ const Products = () => {
           ))}
         </table>
       </div>
-
-      { toggle && <AddProduct toggle={handleToggle} /> }
     </div>
   );
 };
 
-export default Products;
+export default ManageStock;

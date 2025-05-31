@@ -24,6 +24,7 @@ const SalesReport = sequelize.define(
     date: {
       type: DataTypes.DATE,
       allowNull: false,
+      defaultValue: DataTypes.NOW,    
     },
   },
   { tableName: "sales_reports", timestamps: true }

@@ -11,6 +11,10 @@ const ProductSize = sequelize.define(
     },
     productId: {
       type: DataTypes.UUID,
+      references: {
+        model: "products", // Name of the referenced model
+        key: "id", // Key in the referenced model
+      },
       allowNull: false,
     },
     size: {

@@ -1,18 +1,20 @@
-
-
-
 .slideBarList {
-  list-style: none;
-  padding: 1rem .5rem;
+  padding: 1rem 0.5rem;
 }
 
+.slideBarList li {
+  border-radius: 5px;
+  /* border-bottom: 1px solid #ccc; */
+}
 
 .slideBarList li .li {
   padding: 12px 16px;
   display: flex;
-  align-items: center;
-  border-radius: 5px;
-  margin: 1px;
+  gap: 0.3rem;
+  color : rgb(27, 27, 27);
+  /* margin: 1px; */
+  font-size: 0.95rem;
+  font-family: "Roboto", sans-serif;
 }
 
 .slideBarList li:hover {

@@ -22,7 +22,7 @@
   margin-left: 250px;
   padding: 1.6rem ;
   background-color: #f1f1f1;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   transition: margin-left 0.3s ease;
   position: relative;
   top: 70px;

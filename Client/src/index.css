@@ -1,4 +1,26 @@
-@import "tailwindcss";
 *{
-  @apply m-0 p-0 box-border;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
 }
+.li{
+  text-decoration: none;
+  color: black;
+  font-weight: 500;
+  border-radius: 5px;
+}
+body{
+  background-color: #f1f1f1;
+  color: #333;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.li.active {
+  border-right: 3px solid #f60;
+  border-left: 3px solid #f60;
+  box-shadow: 0 0 3px #f60;
+  transition: all 0.3s ease;
+}
+
+

@@ -8,21 +8,21 @@ import { GoStack } from "react-icons/go";
 import { LiaFileInvoiceSolid } from "react-icons/lia";
 
 import "../Styles/SlideBar.css"
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 const SlideBar = () => {
   return (
     <div className="slideBarContainer">
       <ul className="slideBarList">
-        <li><Link className="li" to="/"><span><RxDashboard /></span><span>Dashboard</span></Link></li>
-        <li><Link className="li" to="/products"><span><IoCubeOutline /></span><span>Products</span></Link></li>
-        <li><Link className="li" to="/create-product"><span><MdOutlineCreateNewFolder /></span><span>Create Product</span></Link></li>
-        <li><Link className="li" to="/category"><span><LuLayoutList /></span><span>Category</span></Link></li>
-        <li><Link className="li" to="/sub-category"><span><BsViewList /></span><span>Sub Category</span></Link></li>
-        <li><Link className="li" to="/brand"><span><TbBrandAdobe /></span><span>Brand</span></Link></li>
-        <li><Link className="li" to="/print-barcode"><span><LuScanBarcode /></span><span>Print Barcode</span></Link></li>
-        <li><Link className="li" to="/manage-stock"><span><GoStack /></span><span>Manage Stock</span></Link></li>
-        <li><Link className="li" to="/invoice"><span><LiaFileInvoiceSolid /></span><span>Invoice</span></Link></li>
-        <li><Link className="li" to="/sales-reports"><span><RxDashboard /></span><span>Sales Reports</span></Link></li>
+        <li><NavLink className="li" to="/"><span><RxDashboard /></span><span>Dashboard</span></NavLink></li>
+        <li><NavLink className="li" to="/products"><span><IoCubeOutline /></span><span>Products</span></NavLink></li>
+        <li><NavLink className="li" to="/create-product"><span><MdOutlineCreateNewFolder /></span><span>Create Product</span></NavLink></li>
+        <li><NavLink className="li" to="/categories"><span><LuLayoutList /></span><span>Category</span></NavLink></li>
+        <li><NavLink className="li" to="/sub-categories"><span><BsViewList /></span><span>Sub Category</span></NavLink></li>
+        {/* <li><NavLink className="li" to="/brand"><span><TbBrandAdobe /></span><span>Brand</span></NavLink></li> */}
+        <li><NavLink className="li" to="/print-barcode"><span><LuScanBarcode /></span><span>Print Barcode</span></NavLink></li>
+        <li><NavLink className="li" to="/manage-stock"><span><GoStack /></span><span>Manage Stock</span></NavLink></li>
+        <li><NavLink className="li" to="/invoice"><span><LiaFileInvoiceSolid /></span><span>Invoice</span></NavLink></li>
+        <li><NavLink className="li" to="/sales-reports"><span><RxDashboard /></span><span>Sales Reports</span></NavLink></li>
       </ul>
     </div>
   );
