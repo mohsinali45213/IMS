@@ -5,14 +5,34 @@ import {
   MdAddCircleOutline,
 } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddProduct from "../Components/AddProduct";
-const Products = () => {
+import axios from "axios";
 
+const API = import.meta.env.VITE_API;
+
+const Products = () => {
   const [toggle, setToggle] = useState(false);
+  const [product,setProduct]  = useState<any>([])
   const handleToggle = () => {
     setToggle(!toggle);
   };
+
+  const getProducts = async() =>{
+    try {
+      const data = await axios.get(`${API}/products`)
+      setProduct(data.data)
+      console.log(data.data);
+      
+    } catch (error) {
+      console.log("Product not found");
+      
+    }
+  }
+
+  useEffect(()=>{
+    getProducts()
+  },[])
 
   return (
     <div className="products-container">
@@ -70,7 +90,7 @@ const Products = () => {
             <th>Product</th>
             <th>Category</th>
             <th>Brand</th>
-            <th>Price</th>
+            {/* <th>Price</th> */}
             <th>Stock</th>
             <th>Actions</th>
           </tr>
@@ -83,7 +103,7 @@ const Products = () => {
               <td>Product {index + 1}</td>
               <td>Category {index + 1}</td>
               <td>Brand {index + 1}</td>
-              <td>${(Math.random() * 100).toFixed(2)}</td>
+              {/* <td>${(Math.random() * 100).toFixed(2)}</td> */}
               <td>{Math.floor(Math.random() * 100)}</td>
               <td>
                 <button className="view-button">
@@ -101,7 +121,7 @@ const Products = () => {
         </table>
       </div>
 
-      { toggle && <AddProduct toggle={handleToggle} /> }
+      {toggle && <AddProduct toggle={handleToggle} />}
     </div>
   );
 };

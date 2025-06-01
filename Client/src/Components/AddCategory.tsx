@@ -21,13 +21,40 @@
 // export default AddCategory
 
 
+import { useEffect, useState } from "react";
 import "../Styles/PopUP.css";
 
-const AddCategory = ({ handleToggle }: any) => {
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    handleToggle(); // You can handle form data here if needed
-  };
+type AddCategoryProps = {
+  handleToggle: () => void;
+  functions: (params: { name: string; id?: string }) => void;
+  editData?: { id: string; name: string } | null;
+};
+
+const AddCategory: React.FC<AddCategoryProps> = ({  handleToggle, functions, editData }: any) => {
+  const [categoryName,setCategoryName] = useState("")
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   handleToggle(); // You can handle form data here if needed
+  // };
+
+   useEffect(() => {
+      if (editData) {
+        setCategoryName(editData.name);
+      }
+    }, [editData]);
+  
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (categoryName.trim()) {
+        if (editData) {
+          functions({ name: categoryName, id: editData.id });
+        } else {
+          functions({ name: categoryName });
+        }
+        setCategoryName("");
+        handleToggle();
+      }
+    };
 
   return (
     <div className="pop-up-wrapper">

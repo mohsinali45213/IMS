@@ -1,69 +1,30 @@
-// import React from 'react';
 
-
-// import "../Styles/PopUP.css";
-
-// const AddBrand = ({ handleToggle,createBrand }: any) => {
-//   const handleSubmit = (e: React.FormEvent) => {
-//     e.preventDefault();
-//     handleToggle(); // You can handle form data here if needed
-//   };
-
-//   return (
-//     <div className="pop-up-wrapper">
-//       <div className="pop-up-container premium">
-//         <form onSubmit={handleSubmit}>
-//           <h2 className="form-title">📂 Add New Brand</h2>
-
-//           <div className="form-grid">
-//             <div className="form-group">
-//               <label>Brand Name</label>
-//               <input
-//                 type="text"
-//                 placeholder="Enter brand name"
-//                 required
-//               />
-//             </div>
-//           </div>
-
-//           <div className="button-container">
-//             <button
-//               type="button"
-//               className="cancel-button"
-//               onClick={handleToggle}
-//             >
-//               Cancel
-//             </button>
-//             <button type="submit" className="submit-button">
-//               Add Category
-//             </button>
-//           </div>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default AddBrand;
-
-
-
-import React, { useState } from 'react';
-
+import React, { useEffect, useState } from "react";
 import "../Styles/PopUP.css";
 
 type AddBrandProps = {
   handleToggle: () => void;
-  functions: (params: { name: string }) => void;
+  functions: (params: { name: string; id?: string }) => void;
+  editData?: { id: string; name: string } | null;
 };
 
-const AddBrand: React.FC<AddBrandProps> = ({ handleToggle, functions }) => {
+const AddBrand: React.FC<AddBrandProps> = ({ handleToggle, functions, editData }) => {
   const [brandName, setBrandName] = useState("");
+
+  useEffect(() => {
+    if (editData) {
+      setBrandName(editData.name);
+    }
+  }, [editData]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (brandName.trim()) {
-      functions({ name: brandName });
+      if (editData) {
+        functions({ name: brandName, id: editData.id });
+      } else {
+        functions({ name: brandName });
+      }
       setBrandName("");
       handleToggle();
     }
@@ -73,7 +34,9 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleToggle, functions }) => {
     <div className="pop-up-wrapper">
       <div className="pop-up-container premium">
         <form onSubmit={handleSubmit}>
-          <h2 className="form-title">📂 Add New Brand</h2>
+          <h2 className="form-title">
+            {editData ? "✏️ Edit Brand" : "📂 Add New Brand"}
+          </h2>
 
           <div className="form-grid">
             <div className="form-group">
@@ -82,7 +45,7 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleToggle, functions }) => {
                 type="text"
                 placeholder="Enter brand name"
                 value={brandName}
-                onChange={e => setBrandName(e.target.value)}
+                onChange={(e) => setBrandName(e.target.value)}
                 required
               />
             </div>
@@ -92,12 +55,15 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleToggle, functions }) => {
             <button
               type="button"
               className="cancel-button"
-              onClick={handleToggle}
+              onClick={() => {
+                setBrandName("");
+                handleToggle();
+              }}
             >
               Cancel
             </button>
             <button type="submit" className="submit-button">
-              Add Brand
+              {editData ? "Update Brand" : "Add Brand"}
             </button>
           </div>
         </form>

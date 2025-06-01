@@ -10,14 +10,7 @@ const API = import.meta.env.VITE_API;
 const Brand = () => {
   const [toggle, setToggle] = useState(false);
   const [brand, setBrand] = useState<any>();
-  const createBrand = async({ name }: { name: string }) => {
-    try {
-      await axios.post(`${API}/brands`, { name });
-      await getBrands()
-    } catch (error) {
-      console.log("Brand Not Created");
-    }
-  };
+  const [editData, setEditData] = useState<{ id: string; name: string } | null>(null);
 
   const deleteBrand = async(id:string) =>{
     try {
@@ -28,14 +21,33 @@ const Brand = () => {
       
     }
   }
-  const editBrands = async(name:string,id:string) =>{
-    try {
-      await axios.put(`${API}/brands/${id}`)
-    } catch (error) {
-      console.log("Edit branch fail");
-      
+
+  ///update brand
+  const createOrUpdateBrand = async ({ name, id }: { name: string; id?: string }) => {
+  try {
+    if (id) {
+      // Update existing brand
+      await axios.put(`${API}/brands/${id}`, { name });
+    } else {
+      // Create new brand
+      await axios.post(`${API}/brands`, { name });
     }
+    await getBrands();
+  } catch (error) {
+    console.error(id ? "Failed to update brand" : "Failed to create brand", error);
   }
+};
+
+
+
+  // const editBrands = async(name:string,id:string) =>{
+  //   try {
+  //     await axios.put(`${API}/brands/${id}`)
+  //   } catch (error) {
+  //     console.log("Edit branch fail");
+      
+  //   }
+  // }
   const getBrands = async () => {
     try {
       const res = await axios.get(`${API}/brands`);
@@ -52,8 +64,10 @@ const Brand = () => {
     getBrands()
   },[])
   const handleToggle = () => {
-    setToggle(!toggle);
-  };
+  setToggle(!toggle);
+  setEditData(null); // clear edit mode
+};
+
   return (
     <div className="products-container">
       <div className="title">
@@ -65,7 +79,7 @@ const Brand = () => {
           <span>
             <MdAddCircleOutline />
           </span>
-          <span>Add New Category</span>
+          <span>Add New Brand</span>
         </button>
       </div>
       <div className="products-items">
@@ -103,16 +117,26 @@ const Brand = () => {
               <td>
                 <input type="checkbox" />
               </td>
-              <td>{data.name}</td>
+              <td>{data.name.toUpperCase()}</td>
               <td>{data.slug}</td>
               <td style={{ color:data.status == "active" ? "green" : "red" }}>
                 {data.status.toUpperCase()}
               </td>
 
               <td>
-                <button className="edit-button"  onClick={(e) => console.log("fbvjhfbv")}>
+                {/* <button className="edit-button"  onClick={(e) => console.log("fbvjhfbv")}>
                   <FaRegEdit />
-                </button>
+                </button> */}
+                <button
+  className="edit-button"
+  onClick={() => {
+    setEditData({ id: data.id, name: data.name });
+    setToggle(true);
+  }}
+>
+  <FaRegEdit />
+</button>
+                
                 <button className="delete-button"  onClick={()=>deleteBrand(data.id)}>
                   <MdDeleteOutline />
                 </button>
@@ -121,9 +145,16 @@ const Brand = () => {
           ))}
         </table>
       </div>
-      {toggle && (
+      {/* {toggle && (
         <AddBrand handleToggle={handleToggle} functions={createBrand} />
-      )}
+      )} */}
+      {toggle && (
+  <AddBrand
+    handleToggle={handleToggle}
+    functions={createOrUpdateBrand}
+    editData={editData}
+  />
+)}
     </div>
   );
 };

@@ -1,16 +1,70 @@
 import "../Styles/Products.css";
-import {
-  MdDeleteOutline,
-  MdAddCircleOutline,
-} from "react-icons/md";
+import { MdDeleteOutline, MdAddCircleOutline } from "react-icons/md";
 import AddCategory from "../Components/AddCategory";
 import { FaRegEdit } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+const API = import.meta.env.VITE_API;
 const Category = () => {
   const [toggle, setToggle] = useState(false);
+  const [category, setCategory] = useState<any>([]);
+  const [editData, setEditData] = useState<{ id: string; name: string } | null>(null);
+
   const handleToggle = () => {
     setToggle(!toggle);
+    setEditData(null);
   };
+
+  const getCategory = async () => {
+    try {
+      const data = await axios.get(`${API}/category`);
+      const res = data.data?.data || [];
+      setCategory(res);
+      // console.log(res);
+    } catch (error) {
+      console.log("Product not found");
+    }
+  };
+
+  useEffect(() => {
+    getCategory();
+  }, []);
+
+
+
+
+  // delete category
+
+  const deleteCategory = async(id:string) =>{
+    try {
+      await axios.delete(`${API}/category/${id}`)
+      await getCategory()
+    } catch (error) {
+      console.log("Delete category fail");
+      
+    }
+  }
+
+
+  //createOrUpdateBrand
+    const createOrUpdateCategory = async ({ name, id }: { name: string; id?: string }) => {
+  try {
+    if (id) {
+      // Update existing brand
+      await axios.put(`${API}/category/${id}`, { name });
+    } else {
+      // Create new brand
+      await axios.post(`${API}/category`, { name });
+    }
+    await getCategory();
+  } catch (error) {
+    console.error(id ? "Failed to update category" : "Failed to create category", error);
+  }
+};
+
+
+
+
   return (
     <div className="products-container">
       <div className="title">
@@ -55,22 +109,25 @@ const Category = () => {
             <th>Status</th>
             <th>Actions</th>
           </tr>
-          {Array.from({ length: 100 }).map((_, index) => (
-            <tr key={index}>
+          {category.map((data:any) => (
+            <tr key={data.id}>
               <td>
                 <input type="checkbox" />
               </td>
-              <td>Category {index + 1}</td>
-              <td>Slug-{index + 1}</td>
-              <td style={{ color: Math.random() > 0.5 ? "green" : "red" }}>
-                {Math.random() > 0.5 ? "Active" : "Inactive"}
+              <td>{data.name}</td>
+              <td>{data.slug}</td>
+              <td style={{color:data.status=="active" ? "green" : "red" }}>
+                {data.status}
               </td>
 
               <td>
-                <button className="edit-button">
+                <button className="edit-button"  onClick={() => {
+    setCategory({ id: data.id, name: data.name });
+    setToggle(true);
+  }}>
                   <FaRegEdit />
                 </button>
-                <button className="delete-button">
+                <button className="delete-button" onClick={()=>deleteCategory(data.id)}>
                   <MdDeleteOutline />
                 </button>
               </td>
@@ -78,7 +135,8 @@ const Category = () => {
           ))}
         </table>
       </div>
-      {toggle && <AddCategory handleToggle={handleToggle} />}
+      {toggle && <AddCategory handleToggle={handleToggle} functions={createOrUpdateCategory}
+    editData={editData}/>}
     </div>
   );
 };
