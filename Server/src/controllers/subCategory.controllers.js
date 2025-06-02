@@ -6,6 +6,8 @@ import slugify from "../utils/slugify.js"; // a simple slug generator
 export const createSubCategory = async (req, res) => {
   try {
     const { name, categoryId, status } = req.body;
+    console.log(name);
+    
 
     const category = await Category.findByPk(categoryId);
     if (!category) {

@@ -4,8 +4,7 @@ import slugify from "../utils/slugify.js";
 // ✅ Create a new brand
 export const createBrand = async (req, res) => {
   try {
-    const { name, status } = req.body;
-
+    const { name, status } = req.body;    
     const slug = slugify(name);
 
     const newBrand = await Brand.create({ name, slug, status });

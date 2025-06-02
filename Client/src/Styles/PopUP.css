@@ -87,13 +87,9 @@
 
 
 
+/* 
 
 
-
-/* dkh3uhdjdidjddk */
-
-/* Popup background */
-/* Wrapper for modal */
 .pop-up-wrapper {
   position: fixed;
   top: 0;
@@ -107,16 +103,7 @@
   z-index: 99;
 }
 
-/* Premium modal */
-/* .pop-up-container.premium {
-  width: 700px;
-  background: #ffffff;
-  padding: 40px;
-  border-radius: 16px;
-  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', sans-serif;
-  animation: fadeIn 0.3s ease-in-out;
-} */
+
 
 @keyframes fadeIn {
   from {
@@ -132,31 +119,9 @@
 .form-title {
   font-size: 1.75rem;
   color: #1d4ed8; /* primary blue */
-  margin-bottom: 54px;
-  text-align: center;
-}
-
-/* Grid Layout */
-/* .form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-} */
-
-/* Form Groups */
-/* .form-group {
-  display: flex;
-  flex-direction: column;
-} */
-.form-group label {
-  font-size: 1.2rem;
-  font-weight: 400;
-  /* color: #374151; dark gray */
-  /* margin-bottom: 6px; */
-}
 
 /* Input Styling */
-input[type="text"],
+/* input[type="text"],
 select,
 input[type="file"] {
   padding: 10px 12px;
@@ -172,10 +137,10 @@ select:focus {
   border-color: #3b82f6;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
   outline: none;
-}
+} */
 
 /* Image Preview */
-.image-preview {
+/* .image-preview {
   margin-top: 12px;
   text-align: center;
 }
@@ -199,18 +164,18 @@ select:focus {
 
 .image-preview button:hover {
   background-color: #dc2626;
-}
+} */
 
 /* Button Container */
-.button-container {
+/* .button-container {
   display: flex;
   justify-content: flex-end;
   gap: 16px;
   margin-top: 30px;
-}
+} */
 
 /* Buttons */
-.cancel-button {
+/* .cancel-button {
   padding: 10px 18px;
   background-color: #e5e7eb;
   border: none;
@@ -240,12 +205,6 @@ select:focus {
 
 
 
-
-
-
-
-
-
 .pop-up-container.premium {
   max-width: 800px;
   width: 100%;
@@ -254,6 +213,7 @@ select:focus {
   background-color: #fff;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
 }
+
 
 .form-grid {
   display: grid;
@@ -264,11 +224,178 @@ select:focus {
 .form-group {
   display: flex;
   flex-direction: column;
+} */
+
+
+
+
+
+
+
+/* Modern Popup Styles */
+/* === BACKDROP === */
+.modern-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  z-index: 999;
 }
 
-/* input, select {
-  padding: 0.5rem;
-  font-size: 1rem;
+/* === POPUP === */
+.modern-popup {
+  background: white;
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  animation: slideUp 0.3s ease-out;
+}
+
+/* === ANIMATION === */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === FORM TITLE === */
+.modern-form h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* === INPUT FIELD === */
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.input-wrapper label {
+  font-size: 0.875rem;
+  color: #555;
+}
+
+.input-wrapper input {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  border: 1px solid #ccc;
-} */
+  font-size: 1rem;
+  transition: border 0.2s;
+}
+
+.input-wrapper input:focus {
+  border-color: #555;
+  outline: none;
+}
+
+/* === ACTION BUTTONS === */
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.action-buttons button {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.cancel {
+  background: #f2f2f2;
+  color: #333;
+}
+
+.cancel:hover {
+  background: #e0e0e0;
+}
+
+.submit {
+  background: #f60;
+  color: white;
+}
+
+.submit:disabled {
+  background: #fdd98c;
+  color: #333;
+  cursor: not-allowed;
+}
+
+.submit:hover:enabled {
+  background: #e65c00;
+}
+
+/* === RESPONSIVE STYLES === */
+@media (max-width: 500px) {
+  .modern-popup {
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+
+  .modern-form h2 {
+    font-size: 1.1rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .action-buttons button {
+    width: 100%;
+  }
+}
+
+
+
+.select-label {
+  font-size: 0.875rem;
+  color: #555;
+}
+
+.modern-select {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #fff;
+  transition: border 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 12px;
+}
+
+.modern-select:focus {
+  border-color: #555;
+  outline: none;
+}
+
+
+
+
+

@@ -1,17 +1,252 @@
+// import "../Styles/Products.css";
+// import { MdDeleteOutline, MdAddCircleOutline } from "react-icons/md";
+// import { FaRegEdit } from "react-icons/fa";
+// import { useEffect, useState } from "react";
+// import axios from "axios";
+// import AddSubCategory from "../Components/AddSubCategory";
+
+// const API = import.meta.env.VITE_API;
+
+// interface Category {
+//   id: string;
+//   name: string;
+// }
+
+// interface SubCategory {
+//   id: string;
+//   name: string;
+//   slug: string;
+//   status: "active" | "inactive";
+//   category: Category;
+// }
+
+// const SubCategory = () => {
+//   const [toggle, setToggle] = useState(false);
+//   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+
+//   const handleToggle = () => {
+//     setToggle(!toggle);
+//   };
+
+//   //function to create or update a subcategory
+//   const createOrUpdateSubCategory = async (
+//     subCategoryData: {
+//       name: string;
+//       slug: string;
+//       status: "active" | "inactive";
+//       categoryId: string;
+//       id?: string;
+//     }
+//   ) => {
+//     try {
+//       if (subCategoryData.id) {
+//         // Update existing subcategory
+//         await axios.put(`${API}/subcategory/${subCategoryData.id}`, subCategoryData);
+//       } else {
+//         // Create new subcategory
+//         await axios.post(`${API}/subcategory`, subCategoryData);
+//       }
+//       await getSubCategories();
+//     } catch (error) {
+//       console.error("Failed to create or update subcategory:", error);
+//     }
+//   }
+
+//   // get subategory data
+//   const getSubCategories = async () => {
+//     try {
+//       const res = await axios.get(`${API}/subcategory`);
+//       const data = res.data?.data || [];
+//       setSubCategories(data);
+//       console.log(API);
+//     } catch (error) {
+//       console.error("Failed to fetch subcategories:", error);
+//     }
+//   };
+//   useEffect(() => {
+//     getSubCategories();
+//   }, []);
+
+//   // Function to delete a subcategory
+//   const deleteSubCategory = async (id: string) => {
+//     try {
+//       await axios.delete(`${API}/subcategory/${id}`);
+//       await getSubCategories();
+//     } catch (error) {
+//       console.log("Delete category fail");
+//     }
+//   };
+
+//   return (
+//     <div className="products-container">
+//       <div className="title">
+//         <div>
+//           <h2>Sub Category</h2>
+//           <h3>Manage your sub categories</h3>
+//         </div>
+//         <button onClick={handleToggle}>
+//           <span>
+//             <MdAddCircleOutline />
+//           </span>
+//           <span>Add New Category</span>
+//         </button>
+//       </div>
+
+//       <div className="products-items">
+//         <table>
+//           <thead>
+//             <tr>
+//               <th>Sub Category</th>
+//               <th>Category</th>
+//               <th>Slug</th>
+//               <th>Status</th>
+//               <th>Actions</th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {subCategories.map((item) => (
+//               <tr key={item.id}>
+//                 <td>{item.name.toUpperCase()}</td>
+//                 <td>{item.category?.name || "—"}</td>
+//                 <td>{item.slug}</td>
+//                 <td
+//                   style={{ color: item.status === "active" ? "green" : "red" }}
+//                 >
+//                   {item.status.toUpperCase()}
+//                 </td>
+//                 <td>
+//                   <button className="edit-button">
+//                     <FaRegEdit />
+//                   </button>
+//                   <button
+//                     className="delete-button"
+//                     onClick={() => deleteSubCategory(item.id)}
+//                   >
+//                     <MdDeleteOutline />
+//                   </button>
+//                 </td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+//       </div>
+
+//       {toggle && <AddSubCategory handleToggle={handleToggle} />}
+//     </div>
+//   );
+// };
+
+// export default SubCategory;
+
 import "../Styles/Products.css";
-import {
-  MdOutlineRemoveRedEye,
-  MdDeleteOutline,
-  MdAddCircleOutline,
-} from "react-icons/md";
+import { MdDeleteOutline, MdAddCircleOutline } from "react-icons/md";
+// import AddCategory from "../Components/AddCategory";
 import AddSubCategory from "../Components/AddSubCategory";
 import { FaRegEdit } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+const API = import.meta.env.VITE_API;
+
 const SubCategory = () => {
   const [toggle, setToggle] = useState(false);
+  // const [subCategory, setSubCategories] = useState<any>([]);
+  const [subCategory, setSubCategories] = useState<
+    {
+      id: string;
+      name: string;
+      slug: string;
+      status: string;
+      categoryId: string;
+    }[]
+  >([]);
+  const [editData, setEditData] = useState<{
+    id: string;
+    name: string;
+    status: string;
+    categoryId: string;
+  } | null>(null);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [sortOption, setSortOption] = useState("");
+
   const handleToggle = () => {
     setToggle(!toggle);
-  }
+    setEditData(null);
+  };
+
+  // get subategory data
+  const getSubCategories = async () => {
+    try {
+      const res = await axios.get(`${API}/subcategory`);
+      const data = res.data?.data || [];
+      setSubCategories(data);
+      console.log(API);
+    } catch (error) {
+      console.error("Failed to fetch subcategories:", error);
+    }
+  };
+  useEffect(() => {
+    getSubCategories();
+  }, []);
+
+  const deleteCategory = async (id: string) => {
+    try {
+      await axios.delete(`${API}/subcategory/${id}`);
+      await getSubCategories();
+    } catch (error) {
+      console.log("Delete category fail");
+    }
+  };
+
+  const createOrUpdateSubCategory = async ({
+    id,
+    name,
+    status,
+    categoryId,
+  }: {
+    id?: string;
+    name: string;
+    status: string;
+    categoryId: string;
+  }) => {
+    try {
+      if (id) {
+        await axios.put(`${API}/subcategory/${id}`, {
+          name,
+          status,
+          categoryId,
+        });
+      } else {
+        await axios.post(`${API}/subcategory`, {
+          name,
+          status,
+          categoryId,
+        });
+      }
+      await getSubCategories();
+    } catch (error) {
+      console.error(
+        id ? "Failed to update subcategory" : "Failed to create subcategory",
+        error
+      );
+    }
+  };
+
+  const filteredCategories = subCategory
+    .filter((cat: any) => {
+      const matchesSearch = cat.name
+        .toLowerCase()
+        .includes(searchQuery.trim().toLowerCase());
+      const matchesStatus = statusFilter ? cat.status === statusFilter : true;
+      return matchesSearch && matchesStatus;
+    })
+    .sort((a: any, b: any) => {
+      if (sortOption === "name-asc") return a.name.localeCompare(b.name);
+      if (sortOption === "name-desc") return b.name.localeCompare(a.name);
+      return 0;
+    });
+
   return (
     <div className="products-container">
       <div className="title">
@@ -23,66 +258,134 @@ const SubCategory = () => {
           <span>
             <MdAddCircleOutline />
           </span>
-          <span>Add New Category</span>
+          <span>Add New Sub Category</span>
         </button>
       </div>
+      {/* {filteredCategories.length === 0 ? (
+        <div className="no-category-row">
+          <span
+            className="icon"
+            style={{ fontSize: "3rem", marginBottom: "1rem" }}
+          >
+            📂
+          </span>
+          <span style={{ color: "#f60", fontSize: "25px" }}>
+            No sub categories found
+          </span>
+        </div>
+      ) : ( */}
+
       <div className="products-items">
         <table>
           <tr>
             <div>
-              <input type="searchItem" placeholder="Search categories..." />
+              <input
+                type="search"
+                placeholder="Search categories..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
             <div>
-              <select>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
                 <option value="">Status</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
               </select>
-              <select>
+              <select
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value)}
+              >
                 <option value="">Sort</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
                 <option value="name-asc">Name: A to Z</option>
                 <option value="name-desc">Name: Z to A</option>
               </select>
             </div>
           </tr>
           <tr>
-            <th>
-              <input type="checkbox" />
-            </th>
-            <th>Sub Category</th>
+            <th>SubCategory</th>
             <th>Category</th>
             <th>Slug</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
-          {Array.from({ length: 100 }).map((_, index) => (
-            <tr key={index}>
-              <td>
-                <input type="checkbox" />
-              </td>
-              <td>Sub Category {index + 1}</td>
-              <td>Category {index + 1}</td>
-              <td>Slug-{index + 1}</td>
-              <td style={{ color: Math.random() > 0.5 ? "green" : "red" }}>
-                {Math.random() > 0.5 ? "Active" : "Inactive"}
-              </td>
 
-              <td>
-                <button className="edit-button">
-                  <FaRegEdit />
-                </button>
-                <button className="delete-button">
-                  <MdDeleteOutline />
-                </button>
-              </td>
-            </tr>
-          ))}
+          {subCategory.length === 0 ? (
+            <div className="no-category-row">
+              <span
+                className="icon"
+                style={{ fontSize: "3rem", marginBottom: "1rem" }}
+              >
+                📂
+              </span>
+              <span style={{ color: "#f60", fontSize: "25px" }}>
+                No sub categories in database
+              </span>
+            </div>
+          ) : filteredCategories.length === 0 ? (
+            <div className="no-category-row">
+              <span
+                className="icon"
+                style={{ fontSize: "3rem", marginBottom: "1rem" }}
+              >
+                🔍
+              </span>
+              <span style={{ color: "#999", fontSize: "20px" }}>
+                No matching results for your search or filter
+              </span>
+            </div>
+          ) : (
+            <div>
+              {filteredCategories.map((data: any) => (
+                <tr key={data.id}>
+                  <td>{data.name.toUpperCase()}</td>
+                  <td>{data.category.name.toUpperCase()}</td>
+                  <td>{data.slug.toUpperCase()}</td>
+                  <td
+                    style={{
+                      color: data.status === "active" ? "green" : "red",
+                    }}
+                  >
+                    {data.status.toUpperCase()}
+                  </td>
+                  <td>
+                    <button
+                      className="edit-button"
+                      onClick={() => {
+                        setEditData({
+                          id: data.id,
+                          name: data.name,
+                          categoryId: data.categoryId,
+                          status: data.status,
+                        });
+                        setToggle(true);
+                      }}
+                    >
+                      <FaRegEdit />
+                    </button>
+                    <button
+                      className="delete-button"
+                      onClick={() => deleteCategory(data.id)}
+                    >
+                      <MdDeleteOutline />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </div>
+          )}
         </table>
       </div>
-
-      {toggle && <AddSubCategory handleToggle={handleToggle} />}
+      {toggle && (
+        <AddSubCategory
+          handleToggle={handleToggle}
+          functions={createOrUpdateSubCategory}
+          editData={editData}
+        />
+      )}
     </div>
   );
 };
