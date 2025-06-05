@@ -111,7 +111,8 @@ const Brand = () => {
         </button>
       </div>
 
-      {/* <div className="products-items">
+
+      <div className="products-items">
         <table>
           <tr>
             <div>
@@ -136,195 +137,96 @@ const Brand = () => {
                 onChange={(e) => setSortOption(e.target.value)}
               >
                 <option value="">Sort</option>
-                {/* <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
                 <option value="name-asc">Name: A to Z</option>
                 <option value="name-desc">Name: Z to A</option>
               </select>
             </div>
           </tr>
           <tr>
-
             <th>Brand</th>
             <th>Slug</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
 
-          {brand
-            ?.filter((brand: any) => {
-              brand.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                brand.slug.toLowerCase().includes(searchQuery.toLowerCase());
-              const matchesSearch =
-                brand.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                brand.slug.toLowerCase().includes(searchQuery.toLowerCase());
-              brand.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                brand.slug.toLowerCase().includes(searchQuery.toLowerCase());
-              const matchesStatus = statusFilter
-                ? brand.status === statusFilter
-                : true;
-              return matchesSearch && matchesStatus;
-            })
-            .sort((a:any , b:any) => {
-              if (sortOption === "name-asc") {
-                return a.name.localeCompare(b.name);
-              } else if (sortOption === "name-desc") {
-                return b.name.localeCompare(a.name);
-              } else if (sortOption === "status-asc") {
-                return a.status.localeCompare(b.status); // "active" before "inactive"
-              } else if (sortOption === "status-desc") {
-                return b.status.localeCompare(a.status); // "inactive" before "active"
-              }
-              return 0;
-            })
-            .map((data: any) => (
-              <tr key={data.id}>
-                <td>{data.name.toUpperCase()}</td>
-                <td>{data.slug.toUpperCase()}</td>
-
-                <td
-                  style={{ color: data.status === "active" ? "green" : "red" }}
-                >
-                  {data.status.toUpperCase()}
-                </td>
-                <td>
-                  <button
-                    className="edit-button"
-                    onClick={() => {
-                      setEditData({
-                        id: data.id,
-                        name: data.name,
-                        status: data.status,
-                      });
-                      setToggle(true);
-                    }}
-                  >
-                    <FaRegEdit />
-                  </button>
-
-                  <button
-                    className="delete-button"
-                    onClick={() => deleteBrand(data.id)}
-                  >
-                    <MdDeleteOutline />
-                  </button>
-                </td>
-              </tr>
-            ))}
-        </table>
-      </div > */}
-      {filteredBrands.length === 0 ? (
-        <div className="no-category-row">
-          <span
-            className="icon"
-            style={{
-              fontSize: "3rem",
-              display: "block",
-              marginBottom: "1rem",
-            }}
-          >
-            📂
-          </span>
-          <span style={{ color: "#f60", fontSize: "25px" }}>
-            No Brands found
-          </span>
-        </div>
-      ) : (
-        <div className="products-items">
-          <table>
-            <tr>
-              <div>
-                <input
-                  type="searchItem"
-                  placeholder="Search categories..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <div>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                >
-                  <option value="">Status</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-                <select
-                  value={sortOption}
-                  onChange={(e) => setSortOption(e.target.value)}
-                >
-                  <option value="">Sort</option>
-                  <option value="name-asc">Name: A to Z</option>
-                  <option value="name-desc">Name: Z to A</option>
-                </select>
-              </div>
-            </tr>
-            <tr>
-              <th>Brand</th>
-              <th>Slug</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-            {brand
-              .filter((b: any) => {
-                const matchesSearch =
-                  b.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                  b.slug.toLowerCase().includes(searchQuery.toLowerCase());
-                const matchesStatus = statusFilter
-                  ? b.status === statusFilter
-                  : true;
-                return matchesSearch && matchesStatus;
-              })
-              .sort((a: any, b: any) => {
-                if (sortOption === "name-asc")
-                  return a.name.localeCompare(b.name);
-                if (sortOption === "name-desc")
-                  return b.name.localeCompare(a.name);
-                if (sortOption === "status-asc")
-                  return a.status.localeCompare(b.status);
-                if (sortOption === "status-desc")
-                  return b.status.localeCompare(a.status);
-                return 0;
-              })
-              .map((data: any) => (
-                <tr key={data.id}>
-                  <td>{data.name.toUpperCase()}</td>
-                  <td>{data.slug.toUpperCase()}</td>
-                  <td
-                    style={{
-                      color: data.status === "active" ? "green" : "red",
-                    }}
-                  >
-                    {data.status.toUpperCase()}
-                  </td>
-                  <td>
-                    <button
-                      className="edit-button"
-                      onClick={() => {
-                        setEditData({
-                          id: data.id,
-                          name: data.name,
-                          status: data.status,
-                        });
-                        setToggle(true);
+          {filteredBrands.length === 0 ? (
+            <div className="no-category-row">
+              <span
+                className="icon"
+                style={{
+                  fontSize: "3rem",
+                  display: "block",
+                  marginBottom: "1rem",
+                }}
+              >
+                📂
+              </span>
+              <span style={{ color: "#f60", fontSize: "25px" }}>
+                No Brands found
+              </span>
+            </div>
+          ) : (
+            <div>
+              {brand
+                .filter((b: any) => {
+                  const matchesSearch =
+                    b.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    b.slug.toLowerCase().includes(searchQuery.toLowerCase());
+                  const matchesStatus = statusFilter
+                    ? b.status === statusFilter
+                    : true;
+                  return matchesSearch && matchesStatus;
+                })
+                .sort((a: any, b: any) => {
+                  if (sortOption === "name-asc")
+                    return a.name.localeCompare(b.name);
+                  if (sortOption === "name-desc")
+                    return b.name.localeCompare(a.name);
+                  if (sortOption === "status-asc")
+                    return a.status.localeCompare(b.status);
+                  if (sortOption === "status-desc")
+                    return b.status.localeCompare(a.status);
+                  return 0;
+                })
+                .map((data: any) => (
+                  <tr key={data.id}>
+                    <td>{data.name.toUpperCase()}</td>
+                    <td>{data.slug.toUpperCase()}</td>
+                    <td
+                      style={{
+                        color: data.status === "active" ? "green" : "red",
                       }}
                     >
-                      <FaRegEdit />
-                    </button>
+                      {data.status.toUpperCase()}
+                    </td>
+                    <td>
+                      <button
+                        className="edit-button"
+                        onClick={() => {
+                          setEditData({
+                            id: data.id,
+                            name: data.name,
+                            status: data.status,
+                          });
+                          setToggle(true);
+                        }}
+                      >
+                        <FaRegEdit />
+                      </button>
 
-                    <button
-                      className="delete-button"
-                      onClick={() => deleteBrand(data.id)}
-                    >
-                      <MdDeleteOutline />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-          </table>
-        </div>
-      )}
+                      <button
+                        className="delete-button"
+                        onClick={() => deleteBrand(data.id)}
+                      >
+                        <MdDeleteOutline />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+            </div>
+          )}
+        </table>
+      </div>
 
       {toggle && (
         <AddBrand

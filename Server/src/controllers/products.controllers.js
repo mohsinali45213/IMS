@@ -53,7 +53,7 @@ export const getAllProducts = async (req, res) => {
       include: [
         // { association: "category" },
         { association: "brand" },
-        { association: "subCategory" },
+        { association: "subCategory", include: [{ association: "category" }] },
         { association: "sizes" },
       ],
     });
