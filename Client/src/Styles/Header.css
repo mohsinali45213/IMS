@@ -26,7 +26,8 @@
 }
 
 .header-container .logo span {
-  color: #f60;
+  /* color: #f60; */
+  color: #4badeb;
 }
 .search{
   flex:1;

@@ -8,6 +8,11 @@ import SubCategory from "../Pages/SubCategory";
 import ManageStock from "../Pages/ManageStock";
 import Brand from "../Pages/Brand";
 import Users from "../Pages/Users";
+import Dashboard from "../Pages/Dashbord";
+import StockDes from "./StockDes";
+import TrendingProducts from "./TrendingProducts";
+import LowStockAlert from "./LowStockAlert";
+import Invoice from "../Pages/Invoice";
 // import CreateProduct from "../Pages/CreateProduct";
 
 const Main = () => {
@@ -22,17 +27,18 @@ const Main = () => {
         </div>
         <div className="content">
           <Routes>
-            {/* <Route path="/" element={<Dashboard />} /> */}
+            <Route path="/" element={<Dashboard />} />
             <Route path="/products" element={<Products />} />
             <Route path="/categories" element={<Category />} />
             <Route path="/sub-categories" element={<SubCategory />} />
-            <Route path="/manage-stock" element={<ManageStock />} />  
+            <Route path="/manage-stock" element={<ManageStock />} />
             {/* <Route path="/create-product" element={<CreateProduct />} /> */}
             <Route path="/brand" element={<Brand />} />
             {/* <Route path="/print-barcode" element={<PrintBarcode />} /> */}
-            {/* <Route path="/invoice" element={<Invoice />} /> */}
+            <Route path="/invoice" element={<Invoice />} />
             {/* <Route path="/sales-reports" element={<SalesReports />} /> */}
             <Route path="/users" element={<Users />} />
+            <Route path="/stock" element={<LowStockAlert />} />
 
             <Route path="*" element={<h1>404 Not Found</h1>} />
           </Routes>

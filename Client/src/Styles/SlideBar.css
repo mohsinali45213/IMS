@@ -1,10 +1,11 @@
 
 .main-bar{
-  font-size: 14px;
+  font-size: 16px;
   text-transform: capitalize;
-  font-weight: 500;
+  font-weight: 600;
   /* margin-bottom: .6rem; */
-  color: #f60;
+  /* color: #f60; */
+  color: #4badeb;
   padding: .2rem 0;
 }
 
@@ -29,7 +30,9 @@
 }
 
 .slideBarList li:hover {
-  background-color: rgba(255, 166, 0, 0.277);
+  /* background-color: rgba(255, 166, 0, 0.277); */
+  background-color: #4badeb;
+  /* color: #fff; */
 }
 
 .slideBarList li span {

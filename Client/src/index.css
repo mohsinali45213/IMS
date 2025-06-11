@@ -17,10 +17,14 @@ body{
   line-height: 1.5;
 }
 .li.active {
-  border-right: 3px solid #f60;
-  border-left: 3px solid #f60;
-  background-color: rgb(255, 233, 206);
-  box-shadow: 0 0 3px #f60;
+  /* border-right: 3px solid #f60; */
+  border-right: 3px solid #4badeb;
+  border-left: 3px solid #4badeb;
+  /* border-left: 3px solid #f60; */
+  background-color: #c2e8ff;
+  /* background-color: rgb(255, 233, 206); */
+  box-shadow: 0 0 3px #4badeb;
+  /* box-shadow: 0 0 3px #f60; */
   transition: all 0.3s ease;
 }
 
